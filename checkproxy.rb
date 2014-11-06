@@ -18,22 +18,26 @@ Shoes.app title: "Check Proxy", width: 400, height: 300, resizable: false do
         @proxy_port = edit_line
       end
     end
-    flow do
-      stack width: 0.4 do
-        para "Proxy username"
+    
+    @authentication = stack do
+      flow do
+        stack width: 0.4 do
+          para "Proxy username"
+        end
+        stack width: 0.4 do
+          @proxy_user = edit_line
+        end
       end
-      stack width: 0.4 do
-        @proxy_user = edit_line
+      flow do
+        stack width: 0.4 do
+          para "Proxy password"
+        end
+        stack width: 0.4 do
+          @proxy_password = edit_line secret: true
+        end
       end
     end
-    flow do
-      stack width: 0.4 do
-        para "Proxy password"
-      end
-      stack width: 0.4 do
-        @proxy_password = edit_line
-      end
-    end
+
     flow do
       stack width: 0.4 do
         para "Check this URL"
@@ -44,12 +48,26 @@ Shoes.app title: "Check Proxy", width: 400, height: 300, resizable: false do
     end
     flow do
       stack width: 0.4 do
-        @push = button "Check"
+        @useauth = flow do
+          @authcheck = check
+          para "Use authentication", size: "x-small"
+        end
       end
       stack width: 0.4 do
-        @result = para ""
+        @push = button "Check"
       end
     end
+    @result = para "", align: "center", fill: "#fff", margin: 20
+  end
+
+  @authentication.hide
+
+  @authcheck.click do
+    @authentication.toggle
+  end
+
+  @useauth.click do
+    @authcheck.checked = ! @authcheck.checked?
   end
 
   @push.click do
